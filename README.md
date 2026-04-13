@@ -1,5 +1,3 @@
-cd /home/edwards-ardila/hemeroteca
-cat > README.md << 'EOF'
 # 📚 Hemeroteca Digital
 
 Sistema de gestión de biblioteca digital con libros y revistas.
@@ -61,5 +59,3 @@ hemeroteca/
 - `main` → producción
 - `develop` → integración
 - `feature/xxx` → nuevas funcionalidades
-
-EOF
