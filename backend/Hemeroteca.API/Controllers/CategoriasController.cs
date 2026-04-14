@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Hemeroteca.API.Data;
 using Hemeroteca.API.Models;
+using Hemeroteca.API.Services.Interfaces;
 
 namespace Hemeroteca.API.Controllers;
 
@@ -9,52 +8,48 @@ namespace Hemeroteca.API.Controllers;
 [Route("api/[controller]")]
 public class CategoriasController : ControllerBase
 {
-    private readonly HemerotecaContext _context;
+    private readonly ICategoriaService _categoriaService;
 
-    public CategoriasController(HemerotecaContext context)
+    public CategoriasController(ICategoriaService categoriaService)
     {
-        _context = context;
+        _categoriaService = categoriaService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var categorias = await _context.Categorias.ToListAsync();
+        var categorias = await _categoriaService.GetAllAsync();
         return Ok(categorias);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var categoria = await _context.Categorias.FindAsync(id);
+        var categoria = await _categoriaService.GetByIdAsync(id);
         if (categoria == null) return NotFound();
         return Ok(categoria);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Categoria categoria)
+    public async Task<IActionResult> Create([FromBody] Categoria categoria)
     {
-        _context.Categorias.Add(categoria);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetById), new { id = categoria.Id }, categoria);
+        var id = await _categoriaService.CreateAsync(categoria);
+        return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Categoria categoria)
+    public async Task<IActionResult> Update(int id, [FromBody] Categoria categoria)
     {
-        if (id != categoria.Id) return BadRequest();
-        _context.Entry(categoria).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        var actualizado = await _categoriaService.UpdateAsync(id, categoria);
+        if (!actualizado) return NotFound();
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var categoria = await _context.Categorias.FindAsync(id);
-        if (categoria == null) return NotFound();
-        _context.Categorias.Remove(categoria);
-        await _context.SaveChangesAsync();
+        var eliminado = await _categoriaService.DeleteAsync(id);
+        if (!eliminado) return NotFound();
         return NoContent();
     }
 }

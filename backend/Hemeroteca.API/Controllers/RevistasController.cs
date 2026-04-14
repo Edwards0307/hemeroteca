@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Hemeroteca.API.Data;
 using Hemeroteca.API.Models;
+using Hemeroteca.API.Services.Interfaces;
 
 namespace Hemeroteca.API.Controllers;
 
@@ -9,72 +8,56 @@ namespace Hemeroteca.API.Controllers;
 [Route("api/[controller]")]
 public class RevistasController : ControllerBase
 {
-    private readonly HemerotecaContext _context;
+    private readonly IRevistaService _revistaService;
 
-    public RevistasController(HemerotecaContext context)
+    public RevistasController(IRevistaService revistaService)
     {
-        _context = context;
+        _revistaService = revistaService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int? categoriaId, [FromQuery] string? buscar)
     {
-        var query = _context.Revistas.Include(r => r.Categoria).AsQueryable();
-
-        if (categoriaId.HasValue)
-            query = query.Where(r => r.CategoriaId == categoriaId);
-
-        if (!string.IsNullOrEmpty(buscar))
-            query = query.Where(r => r.Titulo.Contains(buscar) ||
-                                     r.Autor!.Contains(buscar) ||
-                                     r.Descripcion!.Contains(buscar));
-
-        var revistas = await query.OrderByDescending(r => r.FechaRegistro).ToListAsync();
+        var revistas = await _revistaService.GetAllAsync(categoriaId, buscar);
         return Ok(revistas);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var revista = await _context.Revistas.Include(r => r.Categoria).FirstOrDefaultAsync(r => r.Id == id);
+        var revista = await _revistaService.GetByIdAsync(id);
         if (revista == null) return NotFound();
         return Ok(revista);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Revista revista)
+    public async Task<IActionResult> Create([FromBody] Revista revista)
     {
-        _context.Revistas.Add(revista);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetById), new { id = revista.Id }, revista);
+        var id = await _revistaService.CreateAsync(revista);
+        return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Revista revista)
+    public async Task<IActionResult> Update(int id, [FromBody] Revista revista)
     {
-        if (id != revista.Id) return BadRequest();
-        _context.Entry(revista).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        var actualizado = await _revistaService.UpdateAsync(id, revista);
+        if (!actualizado) return NotFound();
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var revista = await _context.Revistas.FindAsync(id);
-        if (revista == null) return NotFound();
-        _context.Revistas.Remove(revista);
-        await _context.SaveChangesAsync();
+        var eliminado = await _revistaService.DeleteAsync(id);
+        if (!eliminado) return NotFound();
         return NoContent();
     }
 
     [HttpPost("{id}/descargar")]
     public async Task<IActionResult> Descargar(int id)
     {
-        var revista = await _context.Revistas.FindAsync(id);
-        if (revista == null) return NotFound();
-        revista.TotalDescargas++;
-        await _context.SaveChangesAsync();
-        return Ok(new { ruta = revista.RutaArchivo, total = revista.TotalDescargas });
+        var ruta = await _revistaService.DescargarAsync(id);
+        if (ruta == null) return NotFound();
+        return Ok(new { ruta });
     }
 }

@@ -1,12 +1,37 @@
-# Node
+# ─── Variables de entorno (NUNCA subir al repo) ───
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# ─── Node ─────────────────────────────────────────
 node_modules/
 frontend/dist/
+frontend/.vite/
+frontend/coverage/
 
-# .NET
+# ─── .NET ─────────────────────────────────────────
 backend/bin/
 backend/obj/
 backend/**/.vs/
+backend/**/*.user
+backend/**/launchSettings.json
 
-# Environment
-.env
-.env.local
+# ─── Docker ───────────────────────────────────────
+docker-compose.override.yml
+
+# ─── Logs ─────────────────────────────────────────
+*.log
+logs/
+
+# ─── OS ───────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── IDEs ─────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
