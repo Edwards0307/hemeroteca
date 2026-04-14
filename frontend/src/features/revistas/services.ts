@@ -1,5 +1,5 @@
-import api from './api'
-import { Revista } from '../types'
+import api from '../../services/api'
+import type { Revista } from '../../models'
 
 export const revistasService = {
   getAll: (categoriaId?: number, buscar?: string) => {

@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import Layout from './components/Layout/Layout'
-import Home from './pages/Home/Home'
-import Libros from './pages/Libros/Libros'
-import Revistas from './pages/Revistas/Revistas'
-import Login from './pages/Auth/Login'
+import Layout from './layouts/Layout'
+import Home from './views/Home'
+import Libros from './features/libros/views/Libros'
+import Revistas from './features/revistas/views/Revistas'
+import Login from './features/auth/views/Login'
 
 function App() {
   return (

@@ -76,15 +76,8 @@
   box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
-.card h2 {
-  font-size: 1.4rem;
-  color: #1a1a2e;
-}
-
-.card p {
-  color: #666;
-  font-size: 0.95rem;
-}
+.card h2 { font-size: 1.4rem; color: #1a1a2e; }
+.card p { color: #666; font-size: 0.95rem; }
 
 .btn-primary {
   background: #1a1a2e;

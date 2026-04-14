@@ -1,5 +1,5 @@
-import api from './api'
-import { Libro } from '../types'
+import api from '../../services/api'
+import type { Libro } from '../../models'
 
 export const librosService = {
   getAll: (categoriaId?: number, buscar?: string) => {

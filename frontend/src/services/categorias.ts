@@ -1,5 +1,5 @@
 import api from './api'
-import { Categoria } from '../types'
+import type { Categoria } from '../models'
 
 export const categoriasService = {
   getAll: () => api.get<Categoria[]>('/categorias'),

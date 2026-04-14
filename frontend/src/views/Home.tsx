@@ -16,7 +16,6 @@ export default function Home() {
           <button>Buscar</button>
         </div>
       </div>
-
       <div className="cards-grid">
         <div className="card" onClick={() => navigate('/libros')}>
           <BookOpen size={48} color="#e2b96f" />
