@@ -1,14 +1,28 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Hemeroteca.API.Data;
+using Hemeroteca.API.Common;
+using Hemeroteca.API.Repositories;
+using Hemeroteca.API.Repositories.Interfaces;
+using Hemeroteca.API.Services;
+using Hemeroteca.API.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DB
-builder.Services.AddDbContext<HemerotecaContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Conexión a la base de datos
+builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+
+// Repositories
+builder.Services.AddScoped<ILibroRepository, LibroRepository>();
+builder.Services.AddScoped<IRevistaRepository, RevistaRepository>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+// Services
+builder.Services.AddScoped<ILibroService, LibroService>();
+builder.Services.AddScoped<IRevistaService, RevistaService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // CORS
 builder.Services.AddCors(options =>
@@ -36,13 +50,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-// Aplicar migraciones automáticamente al iniciar
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<HemerotecaContext>();
-    db.Database.Migrate();
-}
 
 app.UseSwagger();
 app.UseSwaggerUI();
