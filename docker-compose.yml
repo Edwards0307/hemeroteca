@@ -1,15 +1,16 @@
 services:
-  postgres:
-    image: postgres:16-alpine
+  postgres: # nombre que le doy al servicio
+    image: postgres:16-alpine #imagen oficial de Docker Hub
     container_name: hemeroteca_db
     environment:
-      POSTGRES_USER: postgres
+      POSTGRES_USER: postgres #configuracion del servico
       POSTGRES_PASSWORD: Hemeroteca2024!
       POSTGRES_DB: HemerotecaDB
     ports:
-      - "5432:5432"
+      - "5432:5432" #puerto de mi maquina: puerto contenedor
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   backend:
     build:
