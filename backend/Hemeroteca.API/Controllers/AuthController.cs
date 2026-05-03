@@ -8,10 +8,12 @@ namespace Hemeroteca.API.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly string _adminUsername;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, IConfiguration configuration)
     {
         _authService = authService;
+        _adminUsername = configuration["AdminUsername"] ?? string.Empty;
     }
 
     [HttpPost("login")]
@@ -19,7 +21,8 @@ public class AuthController : ControllerBase
     {
         var token = await _authService.LoginAsync(request.Username, request.Password);
         if (token == null) return Unauthorized(new { message = "Credenciales incorrectas" });
-        return Ok(new { token });
+        var isAdmin = request.Username.Equals(_adminUsername, StringComparison.OrdinalIgnoreCase);
+        return Ok(new { token, isAdmin });
     }
 
     [HttpPost("registro")]
