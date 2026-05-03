@@ -33,7 +33,7 @@ export default function Libros() {
   })
   const [form, setForm] = useState(formInit)
   const [saving, setSaving] = useState(false)
-  const { isAuthenticated } = useAuth()
+  const { isAdmin } = useAuth()
 
   const fetchLibros = useCallback(async () => {
     setLoading(true)
@@ -132,7 +132,7 @@ export default function Libros() {
           <h1>Biblioteca Digital</h1>
           <p>Explora nuestra colección de libros</p>
         </div>
-        {isAuthenticated && (
+        {isAdmin && (
           <button className="btn-agregar" onClick={openCrear}>
             <Plus size={18} /> Agregar Libro
           </button>
@@ -210,7 +210,7 @@ export default function Libros() {
                 {modal.item.descripcion && (
                   <p className="detalle-desc">{modal.item.descripcion}</p>
                 )}
-                {isAuthenticated && (
+                {isAdmin && (
                   <div className="modal-actions">
                     <button className="btn-editar" onClick={() => openEditar(modal.item!)}>
                       <Edit size={16} /> Editar

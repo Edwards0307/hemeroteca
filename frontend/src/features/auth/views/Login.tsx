@@ -23,7 +23,7 @@ export default function Login() {
     try {
       if (mode === 'login') {
         const res = await authService.login({ username, password })
-        login(res.data.token)
+        login(res.data.token, res.data.isAdmin)
         navigate('/')
       } else {
         await authService.registro({ username, password })
