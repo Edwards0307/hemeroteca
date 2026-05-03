@@ -63,6 +63,35 @@ body {
   width: 100%;
 }
 
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #e2b96f;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: 1px solid #555;
+  color: #ccc;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-logout:hover {
+  background: #e2b96f;
+  color: #1a1a2e;
+  border-color: #e2b96f;
+}
+
 .footer {
   background-color: #1a1a2e;
   color: #aaa;
