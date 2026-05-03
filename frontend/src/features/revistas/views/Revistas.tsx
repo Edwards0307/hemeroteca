@@ -33,7 +33,7 @@ export default function Revistas() {
   })
   const [form, setForm] = useState(formInit)
   const [saving, setSaving] = useState(false)
-  const { isAuthenticated } = useAuth()
+  const { isAdmin } = useAuth()
 
   const fetchRevistas = useCallback(async () => {
     setLoading(true)
@@ -130,7 +130,7 @@ export default function Revistas() {
           <h1>Hemeroteca Digital</h1>
           <p>Explora nuestra colección de revistas y publicaciones</p>
         </div>
-        {isAuthenticated && (
+        {isAdmin && (
           <button className="btn-agregar" onClick={openCrear}>
             <Plus size={18} /> Agregar Revista
           </button>
@@ -207,7 +207,7 @@ export default function Revistas() {
                 {modal.item.descripcion && (
                   <p className="detalle-desc">{modal.item.descripcion}</p>
                 )}
-                {isAuthenticated && (
+                {isAdmin && (
                   <div className="modal-actions">
                     <button className="btn-editar" onClick={() => openEditar(modal.item!)}>
                       <Edit size={16} /> Editar

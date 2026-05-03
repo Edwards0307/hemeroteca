@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Hemeroteca.API.Models;
 using Hemeroteca.API.Services.Interfaces;
@@ -9,11 +10,16 @@ namespace Hemeroteca.API.Controllers;
 public class LibrosController : ControllerBase
 {
     private readonly ILibroService _libroService;
+    private readonly string _adminUsername;
 
-    public LibrosController(ILibroService libroService)
+    public LibrosController(ILibroService libroService, IConfiguration configuration)
     {
         _libroService = libroService;
+        _adminUsername = configuration["AdminUsername"] ?? string.Empty;
     }
+
+    private bool EsAdmin() =>
+        User.Identity?.Name?.Equals(_adminUsername, StringComparison.OrdinalIgnoreCase) ?? false;
 
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int? categoriaId, [FromQuery] string? buscar)
@@ -31,23 +37,29 @@ public class LibrosController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] Libro libro)
     {
+        if (!EsAdmin()) return Forbid();
         var id = await _libroService.CreateAsync(libro);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> Update(int id, [FromBody] Libro libro)
     {
+        if (!EsAdmin()) return Forbid();
         var actualizado = await _libroService.UpdateAsync(id, libro);
         if (!actualizado) return NotFound();
         return NoContent();
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
+        if (!EsAdmin()) return Forbid();
         var eliminado = await _libroService.DeleteAsync(id);
         if (!eliminado) return NotFound();
         return NoContent();
